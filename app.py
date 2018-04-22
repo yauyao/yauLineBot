@@ -28,7 +28,7 @@ def callback():
 
     # get request body as text
     body = request.get_data(as_text=True)
-    print("Request body: " + body, "Signature: " + signature)
+    app.logger.info("Request body: " + body)
 
     # handle webhook body
     try:
@@ -51,11 +51,13 @@ def handle_message(event):
             print(title.text.strip())
             print("https://www.ptt.cc" + title.find("a")['href'])
 
-    print("event.message.text"+event.message.text+"@@@\nmessage"+event.message);
+    print("event.message.text"+event.message.text+"@@@\nmessage"+event.message)
+    app.logger.info("event.message.text"+event.message.text+"@@@\nmessage"+event.message)
+
     message = TextSendMessage(text=event.message.text)
     line_bot_api.reply_message(
         event.reply_token,
-        "幹嗎 就是不想回你拉")
+        message)
 
 import os
 if __name__ == "__main__":
