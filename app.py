@@ -1,4 +1,7 @@
 from flask import Flask, request, abort
+from bs4 import BeautifulSoup
+import requests
+
 
 from linebot import (
     LineBotApi, WebhookHandler
@@ -25,7 +28,7 @@ def callback():
 
     # get request body as text
     body = request.get_data(as_text=True)
-    app.logger.info("Request body: " + body)
+    print("Request body: " + body, "Signature: " + signature)
 
     # handle webhook body
     try:
@@ -38,10 +41,21 @@ def callback():
 
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
+    resp = requests.get('https://www.ptt.cc/bbs/Japan_Travel/index.html')
+    soup = BeautifulSoup(resp.text, 'html.parser')
+
+    main_titles = soup.find_all('div', 'title')
+    for title in main_titles:
+
+        if "資訊" in title.text:
+            print(title.text.strip())
+            print("https://www.ptt.cc" + title.find("a")['href'])
+
+    print("event.message.text"+event.message.text+"@@@\nmessage"+event.message);
     message = TextSendMessage(text=event.message.text)
     line_bot_api.reply_message(
         event.reply_token,
-        message)
+        "幹嗎 就是不想回你拉")
 
 import os
 if __name__ == "__main__":
