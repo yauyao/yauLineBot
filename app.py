@@ -41,24 +41,25 @@ def callback():
 
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
+    outInfo = ""
     resp = requests.get('https://www.ptt.cc/bbs/Japan_Travel/index.html')
     soup = BeautifulSoup(resp.text, 'html.parser')
-
     main_titles = soup.find_all('div', 'title')
+
     for title in main_titles:
 
         if "資訊" in title.text:
-            print(title.text.strip())
-            print("https://www.ptt.cc" + title.find("a")['href'])
+            outInfo += title.text.strip()+"\n"
+            outInfo += "https://www.ptt.cc" + title.find("a")['href']+"\n"
 
-    print("event.message.text"+event.message.text)
-    app.logger.info("event.message.text"+event.message.text)
+    app.logger.info("event.message.text:"+event.message.text)
+    app.logger.info("outInfo:" + outInfo)
 
-    message = TextSendMessage(text=event.message.text)
-    line_bot_api.reply_message(
-        event.reply_token,
-        message)
-
+    if "機票" in event.message.text:
+        message = TextSendMessage(text=event.message.text)
+        line_bot_api.reply_message(
+            event.reply_token,
+            message)
 import os
 if __name__ == "__main__":
     port = int(os.environ.get('PORT', 5000))
