@@ -52,11 +52,11 @@ def handle_message(event):
             outInfo += title.text.strip()+"\n"
             outInfo += "https://www.ptt.cc" + title.find("a")['href']+"\n"
 
-    app.logger.info("event.message.text:"+event.message.text)
-    app.logger.info("outInfo:" + outInfo)
+    print("event.message.text:"+event.message.text)
+    print("outInfo:" + outInfo)
 
     if "機票" in event.message.text:
-        message = TextSendMessage(text=event.message.text)
+        message = TextSendMessage(text=outInfo)
         line_bot_api.reply_message(
             event.reply_token,
             message)
