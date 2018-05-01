@@ -43,7 +43,7 @@ def callback():
 def handle_message(event):
     outInfo = ""
     print("on Call"+event.message.text)
-    if "機票" in event.message.text:
+    if "!機票" in event.message.text:
         resp = requests.get('https://www.ptt.cc/bbs/Japan_Travel/index.html')
         soup = BeautifulSoup(resp.text, 'html.parser')
         main_titles = soup.find_all('div', 'title')
