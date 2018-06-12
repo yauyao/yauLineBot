@@ -54,12 +54,18 @@ def handle_message(event):
                 outInfo += title.text.strip()+"\n"
                 outInfo += "https://www.ptt.cc" + title.find("a")['href']+"\n"
 
-        print("outInfo:" + outInfo)
+    if "!日幣" in event.message.text:
+        resp = requests.get('http://www.findrate.tw/JPY/')
+        soup = BeautifulSoup(resp.text, 'html.parser')
+        main_titles = soup.find('table')
+        for title in main_titles:
+            outInfo += title.text.strip() + "\n"
 
-        message = TextSendMessage(text=outInfo)
-        line_bot_api.reply_message(
-            event.reply_token,
-            message)
+    print("outInfo:" + outInfo)
+    message = TextSendMessage(text=outInfo)
+    line_bot_api.reply_message(
+        event.reply_token,
+        message)
 
 import os
 if __name__ == "__main__":
