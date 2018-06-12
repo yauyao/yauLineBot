@@ -56,10 +56,31 @@ def handle_message(event):
 
     if "!日幣" in event.message.text:
         resp = requests.get('http://www.findrate.tw/JPY/')
+        resp.encoding = "utf-8"
         soup = BeautifulSoup(resp.text, 'html.parser')
-        main_titles = soup.find('table')
-        for title in main_titles:
-            outInfo += title.text.strip() + "\n"
+        first_table = soup.find('table')
+        index = 0
+        main_tr = first_table.find_all('tr')
+        for title in main_tr:
+            index = index + 1
+            if index == 2:
+                temp = ""
+                main_td = title.find_all("td")
+                for td in main_td:
+                    temp = temp + td.text + "|"
+
+                temp = temp + "\n"
+                outInfo = outInfo + temp
+
+            if index == 3:
+                temp = ""
+                main_td = title.find_all("td")
+                for td in main_td:
+                    temp = temp + td.text + "|"
+
+                temp = temp + "\n"
+                outInfo = outInfo + temp
+
 
     print("outInfo:" + outInfo)
     message = TextSendMessage(text=outInfo)
