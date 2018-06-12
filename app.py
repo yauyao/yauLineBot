@@ -157,10 +157,12 @@ def handle_message(event):
         outInfo = outInfo + "\n連結:http://www.findrate.tw/JPY/"
 
     print("outInfo:" + outInfo)
-    message = TextSendMessage(text=outInfo)
-    line_bot_api.reply_message(
-        event.reply_token,
-        message)
+
+    if outInfo!="":
+        message = TextSendMessage(text=outInfo)
+        line_bot_api.reply_message(
+            event.reply_token,
+            message)
 
 import os
 if __name__ == "__main__":
