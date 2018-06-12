@@ -120,7 +120,7 @@ def handle_message(event):
 
                 temp = temp + "\n"
                 outInfo = outInfo + temp
-        outInfo = outInfo + "\n連結:http://www.findrate.tw/JPY/"
+        outInfo = outInfo + "\n連結:http://www.findrate.tw/USD/"
 
     if "!人民幣" in event.message.text:
         resp = requests.get('http://www.findrate.tw/CNY/')
@@ -154,7 +154,7 @@ def handle_message(event):
 
                 temp = temp + "\n"
                 outInfo = outInfo + temp
-        outInfo = outInfo + "\n連結:http://www.findrate.tw/JPY/"
+        outInfo = outInfo + "\n連結:http://www.findrate.tw/CNY/"
 
     print("outInfo:" + outInfo)
 
