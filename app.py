@@ -65,22 +65,96 @@ def handle_message(event):
             index = index + 1
             if index == 2:
                 temp = ""
+                tdNum = 0
                 main_td = title.find_all("td")
                 for td in main_td:
-                    temp = temp + td.text + "|"
+                    tdNum = tdNum + 1
+                    if tdNum != 4:
+                        temp = temp + td.text + "|"
 
                 temp = temp + "\n"
                 outInfo = outInfo + temp
 
             if index == 3:
                 temp = ""
+                tdNum = 0
                 main_td = title.find_all("td")
                 for td in main_td:
-                    temp = temp + td.text + "|"
+                    tdNum = tdNum + 1
+                    if tdNum != 4:
+                        temp = temp + td.text + "|"
+
+                temp = temp + "\n"
+                outInfo = outInfo + temp
+        outInfo = outInfo + "\n連結:http://www.findrate.tw/JPY/"
+
+    if "!美金" in event.message.text:
+        resp = requests.get('http://www.findrate.tw/USD/')
+        resp.encoding = "utf-8"
+        soup = BeautifulSoup(resp.text, 'html.parser')
+        first_table = soup.find('table')
+        index = 0
+        main_tr = first_table.find_all('tr')
+        for title in main_tr:
+            index = index + 1
+            if index == 2:
+                temp = ""
+                tdNum = 0
+                main_td = title.find_all("td")
+                for td in main_td:
+                    tdNum = tdNum + 1
+                    if tdNum != 4:
+                        temp = temp + td.text + "|"
 
                 temp = temp + "\n"
                 outInfo = outInfo + temp
 
+            if index == 3:
+                temp = ""
+                tdNum = 0
+                main_td = title.find_all("td")
+                for td in main_td:
+                    tdNum = tdNum + 1
+                    if tdNum != 4:
+                        temp = temp + td.text + "|"
+
+                temp = temp + "\n"
+                outInfo = outInfo + temp
+        outInfo = outInfo + "\n連結:http://www.findrate.tw/JPY/"
+
+    if "!人民幣" in event.message.text:
+        resp = requests.get('http://www.findrate.tw/CNY/')
+        resp.encoding = "utf-8"
+        soup = BeautifulSoup(resp.text, 'html.parser')
+        first_table = soup.find('table')
+        index = 0
+        main_tr = first_table.find_all('tr')
+        for title in main_tr:
+            index = index + 1
+            if index == 2:
+                temp = ""
+                tdNum = 0
+                main_td = title.find_all("td")
+                for td in main_td:
+                    tdNum = tdNum + 1
+                    if tdNum != 4:
+                        temp = temp + td.text + "|"
+
+                temp = temp + "\n"
+                outInfo = outInfo + temp
+
+            if index == 3:
+                temp = ""
+                tdNum = 0
+                main_td = title.find_all("td")
+                for td in main_td:
+                    tdNum = tdNum + 1
+                    if tdNum != 4:
+                        temp = temp + td.text + "|"
+
+                temp = temp + "\n"
+                outInfo = outInfo + temp
+        outInfo = outInfo + "\n連結:http://www.findrate.tw/JPY/"
 
     print("outInfo:" + outInfo)
     message = TextSendMessage(text=outInfo)
