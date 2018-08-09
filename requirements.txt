@@ -2,3 +2,10 @@ line-bot-sdk
 flask
 beautifulsoup4
 selenium
+requests
+html5lib
+numpy==1.12
+matplotlib
+jieba
+wordcloud
+Pillow
