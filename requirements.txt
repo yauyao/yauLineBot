@@ -1,3 +1,4 @@
 line-bot-sdk
 flask
 beautifulsoup4
+selenium

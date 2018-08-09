@@ -1,7 +1,7 @@
 from flask import Flask, request, abort
 from bs4 import BeautifulSoup
 import requests
-
+from ChromeClawer import catchWeb
 
 from linebot import (
     LineBotApi, WebhookHandler
@@ -155,6 +155,11 @@ def handle_message(event):
                 temp = temp + "\n"
                 outInfo = outInfo + temp
         outInfo = outInfo + "\n連結:http://www.findrate.tw/CNY/"
+
+    if '!測試GO' in event.message.text:
+        result = catchWeb()
+        print('main:' + result)
+        outInfo = outInfo + result
 
     print("outInfo:" + outInfo)
 
