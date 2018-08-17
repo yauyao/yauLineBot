@@ -43,5 +43,5 @@ def catchWeb():
         count = td.find('div').string
         return count
     finally:
-        # print('end')
-        driver.quit()  # 關閉瀏覽器, 結束 webdriver process
+         print('end')
+        #driver.quit()  # 關閉瀏覽器, 結束 webdriver process
