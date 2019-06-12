@@ -1,6 +1,7 @@
 from flask import Flask, request, abort
 from bs4 import BeautifulSoup
 import requests
+import os
 from ChromeClawer import catchWeb
 
 from linebot import (
@@ -16,9 +17,9 @@ from linebot.models import (
 app = Flask(__name__)
 
 # Channel Access Token
-line_bot_api = LineBotApi('XOVtTRKkreHUr1XhwbR1M1RAAC4ZBHekThLI2rHNjBMCC8zHXGnwHmyJWPccNSUE1p06TKLhIHXMq+gCMspwcu8Z/UzBFDDIvkluahnupCfROwZtYS8duznXojwcljBQvzTQThwsnBwzoY4S0fh7UQdB04t89/1O/w1cDnyilFU=')
+line_bot_api = LineBotApi(os.environ['LINE_ACCESS_TOKEN'])
 # Channel Secret
-handler = WebhookHandler('895c0915980750bb7f8ce330b1143e56')
+handler = WebhookHandler(os.environ['LINE_SECRET'])
 
 # 監聽所有來自 /callback 的 Post Request
 @app.route("/callback", methods=['POST'])
