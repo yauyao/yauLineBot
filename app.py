@@ -1,4 +1,7 @@
 from flask import Flask, request, abort
+from bs4 import BeautifulSoup
+import requests
+from ChromeClawer import catchWeb
 
 from linebot import (
     LineBotApi, WebhookHandler
@@ -38,10 +41,133 @@ def callback():
 
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
-    message = TextSendMessage(text=event.message.text)
-    line_bot_api.reply_message(
-        event.reply_token,
-        message)
+    outInfo = ""
+    print("on Call"+event.message.text)
+    if "!機票" in event.message.text:
+        resp = requests.get('https://www.ptt.cc/bbs/Japan_Travel/index.html')
+        soup = BeautifulSoup(resp.text, 'html.parser')
+        main_titles = soup.find_all('div', 'title')
+
+        for title in main_titles:
+
+            if "資訊" in title.text:
+                outInfo += title.text.strip()+"\n"
+                outInfo += "https://www.ptt.cc" + title.find("a")['href']+"\n"
+
+    if "!日幣" in event.message.text:
+        resp = requests.get('http://www.findrate.tw/JPY/')
+        resp.encoding = "utf-8"
+        soup = BeautifulSoup(resp.text, 'html.parser')
+        first_table = soup.find('table')
+        index = 0
+        main_tr = first_table.find_all('tr')
+        for title in main_tr:
+            index = index + 1
+            if index == 2:
+                temp = ""
+                tdNum = 0
+                main_td = title.find_all("td")
+                for td in main_td:
+                    tdNum = tdNum + 1
+                    if tdNum != 4:
+                        temp = temp + td.text + "|"
+
+                temp = temp + "\n"
+                outInfo = outInfo + temp
+
+            if index == 3:
+                temp = ""
+                tdNum = 0
+                main_td = title.find_all("td")
+                for td in main_td:
+                    tdNum = tdNum + 1
+                    if tdNum != 4:
+                        temp = temp + td.text + "|"
+
+                temp = temp + "\n"
+                outInfo = outInfo + temp
+        outInfo = outInfo + "\n連結:http://www.findrate.tw/JPY/"
+
+    if "!美金" in event.message.text:
+        resp = requests.get('http://www.findrate.tw/USD/')
+        resp.encoding = "utf-8"
+        soup = BeautifulSoup(resp.text, 'html.parser')
+        first_table = soup.find('table')
+        index = 0
+        main_tr = first_table.find_all('tr')
+        for title in main_tr:
+            index = index + 1
+            if index == 2:
+                temp = ""
+                tdNum = 0
+                main_td = title.find_all("td")
+                for td in main_td:
+                    tdNum = tdNum + 1
+                    if tdNum != 4:
+                        temp = temp + td.text + "|"
+
+                temp = temp + "\n"
+                outInfo = outInfo + temp
+
+            if index == 3:
+                temp = ""
+                tdNum = 0
+                main_td = title.find_all("td")
+                for td in main_td:
+                    tdNum = tdNum + 1
+                    if tdNum != 4:
+                        temp = temp + td.text + "|"
+
+                temp = temp + "\n"
+                outInfo = outInfo + temp
+        outInfo = outInfo + "\n連結:http://www.findrate.tw/USD/"
+
+    if "!人民幣" in event.message.text:
+        resp = requests.get('http://www.findrate.tw/CNY/')
+        resp.encoding = "utf-8"
+        soup = BeautifulSoup(resp.text, 'html.parser')
+        first_table = soup.find('table')
+        index = 0
+        main_tr = first_table.find_all('tr')
+        for title in main_tr:
+            index = index + 1
+            if index == 2:
+                temp = ""
+                tdNum = 0
+                main_td = title.find_all("td")
+                for td in main_td:
+                    tdNum = tdNum + 1
+                    if tdNum != 4:
+                        temp = temp + td.text + "|"
+
+                temp = temp + "\n"
+                outInfo = outInfo + temp
+
+            if index == 3:
+                temp = ""
+                tdNum = 0
+                main_td = title.find_all("td")
+                for td in main_td:
+                    tdNum = tdNum + 1
+                    if tdNum != 4:
+                        temp = temp + td.text + "|"
+
+                temp = temp + "\n"
+                outInfo = outInfo + temp
+        outInfo = outInfo + "\n連結:http://www.findrate.tw/CNY/"
+
+    if '!測試GO' in event.message.text:
+        result = catchWeb()
+        print('main:' + result)
+        outInfo = outInfo + result
+
+    print("outInfo:" + outInfo)
+
+    if outInfo!="":
+        message = TextSendMessage(text=outInfo)
+        line_bot_api.reply_message(
+            event.reply_token,
+            message)
 
 import os
 if __name__ == "__main__":
