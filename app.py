@@ -45,6 +45,7 @@ def handle_message(event):
     print("on Call"+event.message.text)
 
     if "https://www.instagram.com" in event.message.text:
+        # 返回含圖片Message
         imageUrl = ""
         imageUrl += imageInfo(event.message.text)
 
@@ -58,6 +59,7 @@ def handle_message(event):
                 message)
 
     else:
+        # 返回純文字Message
         outInfo = ""
         if "!機票" in event.message.text:
             outInfo += ticketInfo()
@@ -74,13 +76,19 @@ def handle_message(event):
         if "!歐元" in event.message.text:
             outInfo += exchangeRate("EUR")
 
-        if "!英磅" in event.message.text:
+        if "!英鎊" in event.message.text:
             outInfo += exchangeRate("GBP")
 
         if '!測試GO' in event.message.text:
             result = catchWeb()
             print('main:' + result)
             outInfo += result
+
+        if '!妹子' in event.message.text:
+            outInfo += "幹 還沒做吼 吵三小"
+
+        if '!奶子' in event.message.text:
+            outInfo += "沒有女乃豆頁大 自己生"
 
         print("outInfo:" + outInfo)
 
