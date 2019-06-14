@@ -1,7 +1,7 @@
 from flask import Flask, request, abort
-from bs4 import BeautifulSoup
-import requests
-from ChromeClawer import catchWeb
+import os
+from service.ChromeClawer import catchWeb
+from service.Clawer import ticketInfo,imageInfo,exchangeRate
 
 from linebot import (
     LineBotApi, WebhookHandler
@@ -16,9 +16,9 @@ from linebot.models import (
 app = Flask(__name__)
 
 # Channel Access Token
-line_bot_api = LineBotApi('XOVtTRKkreHUr1XhwbR1M1RAAC4ZBHekThLI2rHNjBMCC8zHXGnwHmyJWPccNSUE1p06TKLhIHXMq+gCMspwcu8Z/UzBFDDIvkluahnupCfROwZtYS8duznXojwcljBQvzTQThwsnBwzoY4S0fh7UQdB04t89/1O/w1cDnyilFU=')
+line_bot_api = LineBotApi(os.environ['LINE_ACCESS_TOKEN'])
 # Channel Secret
-handler = WebhookHandler('895c0915980750bb7f8ce330b1143e56')
+handler = WebhookHandler(os.environ['LINE_SECRET'])
 
 # 監聽所有來自 /callback 的 Post Request
 @app.route("/callback", methods=['POST'])
@@ -41,133 +41,62 @@ def callback():
 
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
-    outInfo = ""
+
     print("on Call"+event.message.text)
-    if "!機票" in event.message.text:
-        resp = requests.get('https://www.ptt.cc/bbs/Japan_Travel/index.html')
-        soup = BeautifulSoup(resp.text, 'html.parser')
-        main_titles = soup.find_all('div', 'title')
 
-        for title in main_titles:
+    if "https://www.instagram.com" in event.message.text:
+        # 返回含圖片Message
+        imageUrl = ""
+        imageUrl += imageInfo(event.message.text)
 
-            if "資訊" in title.text:
-                outInfo += title.text.strip()+"\n"
-                outInfo += "https://www.ptt.cc" + title.find("a")['href']+"\n"
+        if imageUrl != "":
+            message = ImageSendMessage(
+                original_content_url=imageUrl,
+                preview_image_url=imageUrl
+            )
+            line_bot_api.reply_message(
+                event.reply_token,
+                message)
 
-    if "!日幣" in event.message.text:
-        resp = requests.get('http://www.findrate.tw/JPY/')
-        resp.encoding = "utf-8"
-        soup = BeautifulSoup(resp.text, 'html.parser')
-        first_table = soup.find('table')
-        index = 0
-        main_tr = first_table.find_all('tr')
-        for title in main_tr:
-            index = index + 1
-            if index == 2:
-                temp = ""
-                tdNum = 0
-                main_td = title.find_all("td")
-                for td in main_td:
-                    tdNum = tdNum + 1
-                    if tdNum != 4:
-                        temp = temp + td.text + "|"
+    else:
+        # 返回純文字Message
+        outInfo = ""
+        if "!機票" in event.message.text:
+            outInfo += ticketInfo()
 
-                temp = temp + "\n"
-                outInfo = outInfo + temp
+        if "!日幣" in event.message.text:
+            outInfo += exchangeRate("JPY")
 
-            if index == 3:
-                temp = ""
-                tdNum = 0
-                main_td = title.find_all("td")
-                for td in main_td:
-                    tdNum = tdNum + 1
-                    if tdNum != 4:
-                        temp = temp + td.text + "|"
+        if "!美金" in event.message.text:
+            outInfo += exchangeRate("USD")
 
-                temp = temp + "\n"
-                outInfo = outInfo + temp
-        outInfo = outInfo + "\n連結:http://www.findrate.tw/JPY/"
+        if "!人民幣" in event.message.text:
+            outInfo += exchangeRate("CNY")
 
-    if "!美金" in event.message.text:
-        resp = requests.get('http://www.findrate.tw/USD/')
-        resp.encoding = "utf-8"
-        soup = BeautifulSoup(resp.text, 'html.parser')
-        first_table = soup.find('table')
-        index = 0
-        main_tr = first_table.find_all('tr')
-        for title in main_tr:
-            index = index + 1
-            if index == 2:
-                temp = ""
-                tdNum = 0
-                main_td = title.find_all("td")
-                for td in main_td:
-                    tdNum = tdNum + 1
-                    if tdNum != 4:
-                        temp = temp + td.text + "|"
+        if "!歐元" in event.message.text:
+            outInfo += exchangeRate("EUR")
 
-                temp = temp + "\n"
-                outInfo = outInfo + temp
+        if "!英鎊" in event.message.text:
+            outInfo += exchangeRate("GBP")
 
-            if index == 3:
-                temp = ""
-                tdNum = 0
-                main_td = title.find_all("td")
-                for td in main_td:
-                    tdNum = tdNum + 1
-                    if tdNum != 4:
-                        temp = temp + td.text + "|"
+        if '!測試GO' in event.message.text:
+            result = catchWeb()
+            print('main:' + result)
+            outInfo += result
 
-                temp = temp + "\n"
-                outInfo = outInfo + temp
-        outInfo = outInfo + "\n連結:http://www.findrate.tw/USD/"
+        if '!妹子' in event.message.text:
+            outInfo += "幹 還沒做吼 吵三小"
 
-    if "!人民幣" in event.message.text:
-        resp = requests.get('http://www.findrate.tw/CNY/')
-        resp.encoding = "utf-8"
-        soup = BeautifulSoup(resp.text, 'html.parser')
-        first_table = soup.find('table')
-        index = 0
-        main_tr = first_table.find_all('tr')
-        for title in main_tr:
-            index = index + 1
-            if index == 2:
-                temp = ""
-                tdNum = 0
-                main_td = title.find_all("td")
-                for td in main_td:
-                    tdNum = tdNum + 1
-                    if tdNum != 4:
-                        temp = temp + td.text + "|"
+        if '!奶子' in event.message.text:
+            outInfo += "沒有女乃豆頁大 自己生"
 
-                temp = temp + "\n"
-                outInfo = outInfo + temp
+        print("outInfo:" + outInfo)
 
-            if index == 3:
-                temp = ""
-                tdNum = 0
-                main_td = title.find_all("td")
-                for td in main_td:
-                    tdNum = tdNum + 1
-                    if tdNum != 4:
-                        temp = temp + td.text + "|"
-
-                temp = temp + "\n"
-                outInfo = outInfo + temp
-        outInfo = outInfo + "\n連結:http://www.findrate.tw/CNY/"
-
-    if '!測試GO' in event.message.text:
-        result = catchWeb()
-        print('main:' + result)
-        outInfo = outInfo + result
-
-    print("outInfo:" + outInfo)
-
-    if outInfo!="":
-        message = TextSendMessage(text=outInfo)
-        line_bot_api.reply_message(
-            event.reply_token,
-            message)
+        if outInfo!="":
+            message = TextSendMessage(text=outInfo)
+            line_bot_api.reply_message(
+                event.reply_token,
+                message)
 
 import os
 if __name__ == "__main__":
