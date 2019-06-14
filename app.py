@@ -62,7 +62,7 @@ def handle_message(event):
     else:
         outInfo = ""
         if "!機票" in event.message.text:
-            outInfo += ticketInfo
+            outInfo += ticketInfo()
 
         if "!日幣" in event.message.text:
             resp = requests.get('http://www.findrate.tw/JPY/')
