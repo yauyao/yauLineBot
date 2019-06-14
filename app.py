@@ -1,9 +1,7 @@
 from flask import Flask, request, abort
-from bs4 import BeautifulSoup
-import requests
 import os
-from ChromeClawer import catchWeb
-from Clawer import ticketInfo,imageInfo
+from service.ChromeClawer import catchWeb
+from service.Clawer import ticketInfo,imageInfo,exchangeRate
 
 from linebot import (
     LineBotApi, WebhookHandler
@@ -65,111 +63,24 @@ def handle_message(event):
             outInfo += ticketInfo()
 
         if "!日幣" in event.message.text:
-            resp = requests.get('http://www.findrate.tw/JPY/')
-            resp.encoding = "utf-8"
-            soup = BeautifulSoup(resp.text, 'html.parser')
-            first_table = soup.find('table')
-            index = 0
-            main_tr = first_table.find_all('tr')
-            for title in main_tr:
-                index = index + 1
-                if index == 2:
-                    temp = ""
-                    tdNum = 0
-                    main_td = title.find_all("td")
-                    for td in main_td:
-                        tdNum = tdNum + 1
-                        if tdNum != 4:
-                            temp = temp + td.text + "|"
-
-                    temp = temp + "\n"
-                    outInfo = outInfo + temp
-
-                if index == 3:
-                    temp = ""
-                    tdNum = 0
-                    main_td = title.find_all("td")
-                    for td in main_td:
-                        tdNum = tdNum + 1
-                        if tdNum != 4:
-                            temp = temp + td.text + "|"
-
-                    temp = temp + "\n"
-                    outInfo = outInfo + temp
-            outInfo = outInfo + "\n連結:http://www.findrate.tw/JPY/"
+            outInfo += exchangeRate("JPY")
 
         if "!美金" in event.message.text:
-            resp = requests.get('http://www.findrate.tw/USD/')
-            resp.encoding = "utf-8"
-            soup = BeautifulSoup(resp.text, 'html.parser')
-            first_table = soup.find('table')
-            index = 0
-            main_tr = first_table.find_all('tr')
-            for title in main_tr:
-                index = index + 1
-                if index == 2:
-                    temp = ""
-                    tdNum = 0
-                    main_td = title.find_all("td")
-                    for td in main_td:
-                        tdNum = tdNum + 1
-                        if tdNum != 4:
-                            temp = temp + td.text + "|"
-
-                    temp = temp + "\n"
-                    outInfo = outInfo + temp
-
-                if index == 3:
-                    temp = ""
-                    tdNum = 0
-                    main_td = title.find_all("td")
-                    for td in main_td:
-                        tdNum = tdNum + 1
-                        if tdNum != 4:
-                            temp = temp + td.text + "|"
-
-                    temp = temp + "\n"
-                    outInfo = outInfo + temp
-            outInfo = outInfo + "\n連結:http://www.findrate.tw/USD/"
+            outInfo += exchangeRate("USD")
 
         if "!人民幣" in event.message.text:
-            resp = requests.get('http://www.findrate.tw/CNY/')
-            resp.encoding = "utf-8"
-            soup = BeautifulSoup(resp.text, 'html.parser')
-            first_table = soup.find('table')
-            index = 0
-            main_tr = first_table.find_all('tr')
-            for title in main_tr:
-                index = index + 1
-                if index == 2:
-                    temp = ""
-                    tdNum = 0
-                    main_td = title.find_all("td")
-                    for td in main_td:
-                        tdNum = tdNum + 1
-                        if tdNum != 4:
-                            temp = temp + td.text + "|"
+            outInfo += exchangeRate("CNY")
 
-                    temp = temp + "\n"
-                    outInfo = outInfo + temp
+        if "!歐元" in event.message.text:
+            outInfo += exchangeRate("EUR")
 
-                if index == 3:
-                    temp = ""
-                    tdNum = 0
-                    main_td = title.find_all("td")
-                    for td in main_td:
-                        tdNum = tdNum + 1
-                        if tdNum != 4:
-                            temp = temp + td.text + "|"
-
-                    temp = temp + "\n"
-                    outInfo = outInfo + temp
-            outInfo = outInfo + "\n連結:http://www.findrate.tw/CNY/"
+        if "!英磅" in event.message.text:
+            outInfo += exchangeRate("GBP")
 
         if '!測試GO' in event.message.text:
             result = catchWeb()
             print('main:' + result)
-            outInfo = outInfo + result
+            outInfo += result
 
         print("outInfo:" + outInfo)
 
