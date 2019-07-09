@@ -77,7 +77,10 @@ def fruitPrice(fruit):
     for tr in main_tr:
         if index%3 == 0:
             main_td = tr.find_all("th")
-            temp += "\n" + main_td[0].text.strip()
+            if temp != "":
+                temp +="\n"
+
+            temp +=  main_td[0].text.strip()
 
         if index%3 == 1:
             main_str = tr.find_all("span")
