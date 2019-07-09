@@ -64,8 +64,37 @@ def exchangeRate(country):
     rateString += "\n連結:http://www.findrate.tw/"+country+"/"
     return rateString
 
-if __name__ == '__main__':
-    # Test Function
-    # IgUrl = "https://www.instagram.com/p/BymVt2NH5OE/?igshid=7jpeb1f596h6"
-    IString = exchangeRate("JPY")
-    print(IString)
+def fruitPrice(fruit):
+    fruitString = ""
+    resp = requests.get("https://www.twfood.cc/fruit/"+fruit+")")
+    resp.encoding = "utf-8"
+    soup = BeautifulSoup(resp.text, 'html.parser')
+    table = soup.find_all('table', 'table-hover')
+    main_tr = table[0].find_all('tr')
+
+    index = 0
+    temp = ""
+    for tr in main_tr:
+        if index%3 == 0:
+            main_td = tr.find_all("th")
+            temp += "\n" + main_td[0].text.strip()
+
+        if index%3 == 1:
+            main_str = tr.find_all("span")
+            price = tr.find_all("th","vege_chart_th_unit")
+            temp +="\n " + str(main_str[0].text).strip() +" "+ str(price[0].text).strip()
+
+        if index%3 == 2:
+            main_str = tr.find_all("span")
+            price = tr.find_all("th","vege_chart_th_unit")
+            temp +="\n " + str(main_str[0].text).strip() +" "+ str(price[0].text).strip()
+
+        index = index + 1
+
+    return temp
+# if __name__ == '__main__':
+#     # Test Function
+#     # IgUrl = "https://www.instagram.com/p/BymVt2NH5OE/?igshid=7jpeb1f596h6"
+#     #IString = exchangeRate("JPY")
+#     IString = fruitPrice()
+#     print(IString)

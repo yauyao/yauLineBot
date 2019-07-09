@@ -1,7 +1,7 @@
 from flask import Flask, request, abort
 import os
 from service.ChromeClawer import catchWeb
-from service.Clawer import ticketInfo,imageInfo,exchangeRate
+from service.Clawer import ticketInfo,imageInfo,exchangeRate,fruitPrice
 
 from linebot import (
     LineBotApi, WebhookHandler
@@ -89,6 +89,10 @@ def handle_message(event):
 
         if '!奶子' in event.message.text:
             outInfo += "沒有女乃豆頁大 自己生"
+
+        if '!火龍果' in event.message.text:
+            outInfo += fruitPrice("812/%E7%81%AB%E9%BE%8D%E6%9E%9C-%E7%B4%85%E8%82%89(%E7%B4%85%E9%BE%8D%E6%9E%9C")
+
 
         print("outInfo:" + outInfo)
 
