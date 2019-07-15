@@ -151,15 +151,17 @@ def getImage(url):
     body = soup.find(class_='main-image')
     img = body.find('img').get('src')
 
+    print(img)
     imgReq = request.Request(img, headers=mheaders)
-    imgPage = imgReq.urlopen(req);
-    return  imgPage
+    imgPage = imgReq.urlopen(req)
+    imgHtml = imgPage.read()
+    return  imgHtml
 
-# if __name__ == '__main__':
-#     # Test Function
-#     # IgUrl = "https://www.instagram.com/p/BymVt2NH5OE/?igshid=7jpeb1f596h6"
-#     #IString = exchangeRate("JPY")
-#     IArray = getImage(getHtmlImgUrl(getSebUrl('https://www.mzitu.com/')))
-#     # IArray = getImage('https://www.mzitu.com/187752/16')
-#
-#     print("main:" + IArray)
+if __name__ == '__main__':
+    # Test Function
+    # IgUrl = "https://www.instagram.com/p/BymVt2NH5OE/?igshid=7jpeb1f596h6"
+    #IString = exchangeRate("JPY")
+    IArray = getImage(getHtmlImgUrl(getSebUrl('https://www.mzitu.com/')))
+    # IArray = getImage('https://www.mzitu.com/187752/16')
+
+    print("main:" + IArray)
