@@ -151,7 +151,9 @@ def getImage(url):
     body = soup.find(class_='main-image')
     img = body.find('img').get('src')
 
-    return  img
+    imgReq = request.Request(img, headers=mheaders)
+    imgPage = imgReq.urlopen(req);
+    return  imgPage
 
 # if __name__ == '__main__':
 #     # Test Function

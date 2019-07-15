@@ -57,6 +57,17 @@ def handle_message(event):
             line_bot_api.reply_message(
                 event.reply_token,
                 message)
+    if '!妹子' in event.message.text:
+        imageUrl = ""
+        imageUrl += getImage(getHtmlImgUrl(getSebUrl('https://www.mzitu.com/')))
+        if imageUrl != "":
+            message = ImageSendMessage(
+                original_content_url=imageUrl,
+                preview_image_url=imageUrl
+            )
+            line_bot_api.reply_message(
+                event.reply_token,
+                message)
 
     else:
         # 返回純文字Message
@@ -83,9 +94,6 @@ def handle_message(event):
             result = catchWeb()
             print('main:' + result)
             outInfo += result
-
-        if '!妹子' in event.message.text:
-            outInfo += getHtmlImgUrl(getSebUrl('https://www.mzitu.com/'))
 
         if '!奶子' in event.message.text:
             outInfo += getHtmlImgUrl(getSebUrl('https://www.mzitu.com/tag/baoru/'))
