@@ -1,7 +1,7 @@
 from flask import Flask, request, abort
 import os
 from service.ChromeClawer import catchWeb
-from service.Clawer import *
+from service.Clawer import ticketInfo,imageInfo,exchangeRate,fruitPrice
 
 from linebot import (
     LineBotApi, WebhookHandler
@@ -58,17 +58,6 @@ def handle_message(event):
                 event.reply_token,
                 message)
 
-    if '!妹子' in event.message.text:
-        imageUrl = getImage(getHtmlImgUrl(getSebUrl('https://www.mzitu.com/')))
-        if imageUrl != "":
-            message = ImageSendMessage(
-                original_content_url=imageUrl,
-                preview_image_url=imageUrl
-            )
-            line_bot_api.reply_message(
-                event.reply_token,
-                message)
-
     else:
         # 返回純文字Message
         outInfo = ""
@@ -94,6 +83,9 @@ def handle_message(event):
             result = catchWeb()
             print('main:' + result)
             outInfo += result
+
+        if '!妹子' in event.message.text:
+            outInfo += "幹 還沒做吼 吵三小"
 
         if '!奶子' in event.message.text:
             outInfo += "沒有女乃豆頁大 自己生"
