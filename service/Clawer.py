@@ -1,5 +1,7 @@
 from bs4 import BeautifulSoup
+from urllib import request
 import requests
+import random
 
 def ticketInfo():
     inFo = ""
@@ -64,8 +66,99 @@ def exchangeRate(country):
     rateString += "\n連結:http://www.findrate.tw/"+country+"/"
     return rateString
 
-if __name__ == '__main__':
-    # Test Function
-    # IgUrl = "https://www.instagram.com/p/BymVt2NH5OE/?igshid=7jpeb1f596h6"
-    IString = exchangeRate("JPY")
-    print(IString)
+def fruitPrice(fruit):
+    fruitString = ""
+    resp = requests.get("https://www.twfood.cc/fruit/"+fruit+")")
+    resp.encoding = "utf-8"
+    soup = BeautifulSoup(resp.text, 'html.parser')
+    table = soup.find_all('table', 'table-hover')
+    main_tr = table[0].find_all('tr')
+
+    index = 0
+    temp = ""
+    for tr in main_tr:
+        if index%3 == 0:
+            main_td = tr.find_all("th")
+            if temp != "":
+                temp +="\n"
+
+            temp +=  main_td[0].text.strip()
+
+        if index%3 == 1:
+            main_str = tr.find_all("span")
+            price = tr.find_all("th","vege_chart_th_unit")
+            temp +="\n " + str(main_str[0].text).strip() +" "+ str(price[0].text).strip()
+
+        if index%3 == 2:
+            main_str = tr.find_all("span")
+            price = tr.find_all("th","vege_chart_th_unit")
+            temp +="\n " + str(main_str[0].text).strip() +" "+ str(price[0].text).strip()
+
+        index = index + 1
+
+    return temp
+
+
+
+def getSebUrl(url):
+    # 瀏覽器請求頭（大部分網站沒有這個請求頭可能會報錯）
+    print(url)
+    mheaders = {
+        'User-Agent': "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.1 (KHTML, like Gecko) Chrome/22.0.1207.1 Safari/537.1"}
+    req = request.Request(url,headers=mheaders) #新增headers避免伺服器拒絕非瀏覽器訪問
+    page = request.urlopen(req)
+    html = page.read()
+    soup = BeautifulSoup(html.decode('utf-8'), 'html.parser')
+    body = soup.find(id="pins")
+    link = body.find_all("li")
+    next_link = []
+    for li_element in link:
+        # print(li_element.find('a').get('href'))
+        next_link.append(li_element.find('a').get('href'))
+
+    num = random.randint(1, len(next_link)-1)
+
+    return next_link[num]  # python3 python2版本直接返回html
+
+def getHtmlImgUrl(url):
+    print(url)
+    index = []
+    mheaders = {
+        'User-Agent': "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.1 (KHTML, like Gecko) Chrome/22.0.1207.1 Safari/537.1"}
+    req = request.Request(url, headers=mheaders)  # 新增headers避免伺服器拒絕非瀏覽器訪問
+    page = request.urlopen(req)
+    html = page.read()
+    soup = BeautifulSoup(html.decode('utf-8'), 'html.parser')
+    body = soup.find(class_="pagenavi")
+    page = body.find_all("a")
+
+    for page_element in page:
+        # print(page_element.get('href').split('/'))
+        element = page_element.get('href').split('/')
+        if element[len(element)-1] != "":
+            index.append(int(element[len(element)-1]))
+
+    return url+"/"+str(random.randint(1, index[4]))
+
+def getImage(url):
+    print(url)
+    mheaders = {
+        'User-Agent': "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.1 (KHTML, like Gecko) Chrome/22.0.1207.1 Safari/537.1"}
+    req = request.Request(url, headers=mheaders)  # 新增headers避免伺服器拒絕非瀏覽器訪問
+    page = request.urlopen(req)
+    html = page.read()
+    soup = BeautifulSoup(html.decode('utf-8'), 'html.parser')
+    body = soup.find(class_='main-image')
+    img = body.find('img').get('src')
+
+    return  img
+
+
+# if __name__ == '__main__':
+#     # Test Function
+#     # IgUrl = "https://www.instagram.com/p/BymVt2NH5OE/?igshid=7jpeb1f596h6"
+#     #IString = exchangeRate("JPY")
+#     IArray = getImage(getHtmlImgUrl(getSebUrl('https://www.mzitu.com/')))
+#     # IArray = getImage('https://www.mzitu.com/187752/16')
+#
+#     print("main:" + IArray)
