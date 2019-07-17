@@ -1,7 +1,7 @@
 from flask import Flask, request, abort
 import os
 from service.ChromeClawer import catchWeb
-from service.Clawer import *
+from service.Clawer import ticketInfo,imageInfo,exchangeRate,fruitPrice,getHtmlImgUrl,getSebUrl,getCk101Url,getCk101Photo
 
 from linebot import (
     LineBotApi, WebhookHandler
@@ -57,9 +57,9 @@ def handle_message(event):
             line_bot_api.reply_message(
                 event.reply_token,
                 message)
-
     if '!妹子' in event.message.text:
-        imageUrl = getImage(getHtmlImgUrl(getSebUrl('https://www.mzitu.com/')))
+        imageUrl = ""
+        imageUrl += getCk101Photo(getCk101Url('https://ck101.com/beauty/'))
         if imageUrl != "":
             message = ImageSendMessage(
                 original_content_url=imageUrl,
@@ -95,12 +95,17 @@ def handle_message(event):
             print('main:' + result)
             outInfo += result
 
+        # if '!妹子' in event.message.text:
+        #     outInfo += getHtmlImgUrl(getSebUrl('https://www.mzitu.com/'))
+
         if '!奶子' in event.message.text:
-            outInfo += "沒有女乃豆頁大 自己生"
+            outInfo += getHtmlImgUrl(getSebUrl('https://www.mzitu.com/tag/baoru/'))
 
         if '!火龍果' in event.message.text:
             outInfo += fruitPrice("812/%E7%81%AB%E9%BE%8D%E6%9E%9C-%E7%B4%85%E8%82%89(%E7%B4%85%E9%BE%8D%E6%9E%9C")
 
+        if '!芒果' in event.message.text:
+            outInfo += fruitPrice("R6/芒果-金煌")
 
         print("outInfo:" + outInfo)
 
