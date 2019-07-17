@@ -1,7 +1,7 @@
 from flask import Flask, request, abort
 import os
 from service.ChromeClawer import catchWeb
-from service.Clawer import ticketInfo,imageInfo,exchangeRate,fruitPrice,getImage,getHtmlImgUrl,getSebUrl
+from service.Clawer import ticketInfo,imageInfo,exchangeRate,fruitPrice,getHtmlImgUrl,getSebUrl,getCk101Url,getCk101Photo
 
 from linebot import (
     LineBotApi, WebhookHandler
@@ -57,17 +57,17 @@ def handle_message(event):
             line_bot_api.reply_message(
                 event.reply_token,
                 message)
-    # if '!妹子' in event.message.text:
-    #     imageUrl = ""
-    #     imageUrl += getImage(getHtmlImgUrl(getSebUrl('https://www.mzitu.com/')))
-    #     if imageUrl != "":
-    #         message = ImageSendMessage(
-    #             original_content_url=imageUrl,
-    #             preview_image_url=imageUrl
-    #         )
-    #         line_bot_api.reply_message(
-    #             event.reply_token,
-    #             message)
+    if '!妹子' in event.message.text:
+        imageUrl = ""
+        imageUrl += getCk101Photo(getCk101Url('https://ck101.com/beauty/'))
+        if imageUrl != "":
+            message = ImageSendMessage(
+                original_content_url=imageUrl,
+                preview_image_url=imageUrl
+            )
+            line_bot_api.reply_message(
+                event.reply_token,
+                message)
 
     else:
         # 返回純文字Message
@@ -95,8 +95,8 @@ def handle_message(event):
             print('main:' + result)
             outInfo += result
 
-        if '!妹子' in event.message.text:
-            outInfo += getHtmlImgUrl(getSebUrl('https://www.mzitu.com/'))
+        # if '!妹子' in event.message.text:
+        #     outInfo += getHtmlImgUrl(getSebUrl('https://www.mzitu.com/'))
 
         if '!奶子' in event.message.text:
             outInfo += getHtmlImgUrl(getSebUrl('https://www.mzitu.com/tag/baoru/'))

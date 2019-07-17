@@ -151,17 +151,49 @@ def getImage(url):
     body = soup.find(class_='main-image')
     img = body.find('img').get('src')
 
-    print(img)
-    imgReq = request.Request(img, headers=mheaders)
-    imgPage = imgReq.urlopen(req)
-    imgHtml = imgPage.read()
-    return  imgHtml
+    return  img
 
-if __name__ == '__main__':
-    # Test Function
-    # IgUrl = "https://www.instagram.com/p/BymVt2NH5OE/?igshid=7jpeb1f596h6"
-    #IString = exchangeRate("JPY")
-    IArray = getImage(getHtmlImgUrl(getSebUrl('https://www.mzitu.com/')))
-    # IArray = getImage('https://www.mzitu.com/187752/16')
+def getCk101Url(url):
+    # 瀏覽器請求頭（大部分網站沒有這個請求頭可能會報錯）
+    index = []
+    mheaders = {
+        'User-Agent': "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.1 (KHTML, like Gecko) Chrome/22.0.1207.1 Safari/537.1"}
+    req = request.Request(url,headers=mheaders) #新增headers避免伺服器拒絕非瀏覽器訪問
+    page = request.urlopen(req)
+    html = page.read()
+    soup = BeautifulSoup(html.decode('utf-8'), 'html.parser')
+    main = soup.find('div','bt-main-cont')
+    search_li = main.find_all('li')
+    for li in search_li:
+        element = li.find('a').get('href')
+        index.append(element)
 
-    print("main:" + IArray)
+    return index[random.randint(0, len(index)-1)]
+
+def getCk101Photo(url):
+    index = []
+    mheaders = {
+        'User-Agent': "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.1 (KHTML, like Gecko) Chrome/22.0.1207.1 Safari/537.1"}
+    req = request.Request(url, headers=mheaders)  # 新增headers避免伺服器拒絕非瀏覽器訪問
+    page = request.urlopen(req)
+    html = page.read()
+    soup = BeautifulSoup(html.decode('utf-8'), 'html.parser')
+    main_table = soup.find(id = 'lightboxwrap')
+    img_all = main_table.find_all('img')
+
+    for img in img_all:
+        element = img.get('file')
+        index.append(element)
+
+    return index[random.randint(0, len(index)-1)]
+
+
+
+# if __name__ == '__main__':
+#     # Test Function
+#     # IgUrl = "https://www.instagram.com/p/BymVt2NH5OE/?igshid=7jpeb1f596h6"
+#     #IString = exchangeRate("JPY")
+#     IArray = getCk101Photo(getCk101Url('https://ck101.com/beauty/'))
+#     # IArray = getImage('https://www.mzitu.com/187752/16')
+#
+#     print(IArray)
