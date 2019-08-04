@@ -2,6 +2,7 @@ from bs4 import BeautifulSoup
 from urllib import request
 import requests
 import random
+import psycopg2
 
 def ticketInfo():
     inFo = ""
@@ -187,13 +188,51 @@ def getCk101Photo(url):
 
     return index[random.randint(0, len(index)-1)]
 
+def SqlFindDataUrl():
+    #connect info
+    host = "ec2-54-235-68-3.compute-1.amazonaws.com"
+    port = "5432"
+    database = "d3iqfu9lhbdhj2"
+    user = "lqqobjhgjomqot"
+    passwd = "yyy410591"
+
+    #construct connect string
+    conn = psycopg2.connect(database=database,host=host,user=user,password=passwd,port=port)
+    cur = conn.cursor()
+
+    #查共有幾個
+    sql = "SELECT count(*) FROM image"
+    cur.execute(sql)
+    rows=cur.fetchall()
+
+    #random其中一個
+    ranId = random.randint(1,int(rows[0][0]))
+    takeUrl = "SELECT title,url FROM image WHERE id ={0}".format(ranId)
+    cur.execute(takeUrl)
+    titleRow = cur.fetchall()
+
+    conn.commit() # 查询时无需，此方法提交当前事务。如果不调用这个方法，无论做了什么修改，自从上次调用#commit()是不可见的
+    cur.close()
+    conn.close()
+
+    return titleRow[0][1]
+
+def randomIgImage():
+    url = SqlFindDataUrl()
+    resp = requests.get(url)
+    soup = BeautifulSoup(resp.text, 'html.parser')
+    main_table = soup.find('article')
+    img_all = main_table.find_all('img')
 
 
-# if __name__ == '__main__':
-#     # Test Function
-#     # IgUrl = "https://www.instagram.com/p/BymVt2NH5OE/?igshid=7jpeb1f596h6"
-#     #IString = exchangeRate("JPY")
-#     IArray = getCk101Photo(getCk101Url('https://ck101.com/beauty/'))
-#     # IArray = getImage('https://www.mzitu.com/187752/16')
-#
-#     print(IArray)
+
+
+if __name__ == '__main__':
+    # Test Function
+    # IgUrl = "https://www.instagram.com/p/BymVt2NH5OE/?igshid=7jpeb1f596h6"
+    # IString = exchangeRate("JPY")
+    # IArray = getCk101Photo(getCk101Url('https://ck101.com/beauty/'))
+    # IArray = getImage('https://www.mzitu.com/187752/16')
+    SData = randomIgImage()
+
+    print(SData)
