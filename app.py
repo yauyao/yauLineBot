@@ -60,6 +60,7 @@ def handle_message(event):
     if '!妹子' in event.message.text:
         imageUrl = ""
         imageUrl += getCk101Photo(getCk101Url('https://ck101.com/beauty/'))
+        print("imageUrl" + imageUrl)
         if imageUrl != "":
             message = ImageSendMessage(
                 original_content_url=imageUrl,

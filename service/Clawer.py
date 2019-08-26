@@ -1,7 +1,10 @@
+import os
+
 from bs4 import BeautifulSoup
 from urllib import request
 import requests
 import random
+import psycopg2
 
 def ticketInfo():
     inFo = ""
@@ -154,6 +157,7 @@ def getImage(url):
     return  img
 
 def getCk101Url(url):
+    print("getCk101Url url:" + url)
     # 瀏覽器請求頭（大部分網站沒有這個請求頭可能會報錯）
     index = []
     mheaders = {
@@ -166,11 +170,15 @@ def getCk101Url(url):
     search_li = main.find_all('li')
     for li in search_li:
         element = li.find('a').get('href')
-        index.append(element)
+        if not element is None:
+            index.append(element)
 
-    return index[random.randint(0, len(index)-1)]
+    getOne = index[random.randint(0, len(index)-1)]
+    print("getCk101Url back url :" + getOne)
+    return getOne
 
 def getCk101Photo(url):
+    print("photo url:"+url)
     index = []
     mheaders = {
         'User-Agent': "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.1 (KHTML, like Gecko) Chrome/22.0.1207.1 Safari/537.1"}
@@ -183,17 +191,58 @@ def getCk101Photo(url):
 
     for img in img_all:
         element = img.get('file')
-        index.append(element)
+        if not element is None:
+            index.append(element)
 
-    return index[random.randint(0, len(index)-1)]
+    getOne = index[random.randint(0, len(index)-1)]
+    print("photo back url :" + getOne)
+    return getOne
+
+def SqlFindDataUrl():
+    #connect info
+    host = os.environ['DATABASE_HOST']
+    port = os.environ['DATABASE_PORT']
+    database = os.environ['DATABASE']
+    user = os.environ['DATABASE_USER']
+    passwd = os.environ['DATABASE_PASSWORD']
+
+    #construct connect string
+    conn = psycopg2.connect(database=database,host=host,user=user,password=passwd,port=port)
+    cur = conn.cursor()
+
+    #查共有幾個
+    sql = "SELECT count(*) FROM image"
+    cur.execute(sql)
+    rows=cur.fetchall()
+
+    #random其中一個
+    ranId = random.randint(1,int(rows[0][0]))
+    takeUrl = "SELECT title,url FROM image WHERE id ={0}".format(ranId)
+    cur.execute(takeUrl)
+    titleRow = cur.fetchall()
+
+    conn.commit() # 查询时无需，此方法提交当前事务。如果不调用这个方法，无论做了什么修改，自从上次调用#commit()是不可见的
+    cur.close()
+    conn.close()
+
+    return titleRow[0][1]
+
+def randomIgImage():
+    url = SqlFindDataUrl()
+    resp = requests.get(url)
+    soup = BeautifulSoup(resp.text, 'html.parser')
+    main_table = soup.find('article')
+    img_all = main_table.find_all('img')
 
 
 
-# if __name__ == '__main__':
-#     # Test Function
-#     # IgUrl = "https://www.instagram.com/p/BymVt2NH5OE/?igshid=7jpeb1f596h6"
-#     #IString = exchangeRate("JPY")
-#     IArray = getCk101Photo(getCk101Url('https://ck101.com/beauty/'))
-#     # IArray = getImage('https://www.mzitu.com/187752/16')
-#
-#     print(IArray)
+
+if __name__ == '__main__':
+    # Test Function
+    # IgUrl = "https://www.instagram.com/p/BymVt2NH5OE/?igshid=7jpeb1f596h6"
+    # IString = exchangeRate("JPY")
+    IArray = getCk101Photo('https://ck101.com/thread-5017396-1-1.html')
+    # IArray = getImage('https://www.mzitu.com/187752/16')
+    # SData = randomIgImage()
+
+    print(IArray)
