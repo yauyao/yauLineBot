@@ -1,3 +1,5 @@
+import os
+
 from bs4 import BeautifulSoup
 from urllib import request
 import requests
@@ -155,6 +157,7 @@ def getImage(url):
     return  img
 
 def getCk101Url(url):
+    print("getCk101Url url:" + url)
     # 瀏覽器請求頭（大部分網站沒有這個請求頭可能會報錯）
     index = []
     mheaders = {
@@ -167,11 +170,15 @@ def getCk101Url(url):
     search_li = main.find_all('li')
     for li in search_li:
         element = li.find('a').get('href')
-        index.append(element)
+        if not element is None:
+            index.append(element)
 
-    return index[random.randint(0, len(index)-1)]
+    getOne = index[random.randint(0, len(index)-1)]
+    print("getCk101Url back url :" + getOne)
+    return getOne
 
 def getCk101Photo(url):
+    print("photo url:"+url)
     index = []
     mheaders = {
         'User-Agent': "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.1 (KHTML, like Gecko) Chrome/22.0.1207.1 Safari/537.1"}
@@ -184,17 +191,20 @@ def getCk101Photo(url):
 
     for img in img_all:
         element = img.get('file')
-        index.append(element)
+        if not element is None:
+            index.append(element)
 
-    return index[random.randint(0, len(index)-1)]
+    getOne = index[random.randint(0, len(index)-1)]
+    print("photo back url :" + getOne)
+    return getOne
 
 def SqlFindDataUrl():
     #connect info
-    host = "ec2-54-235-68-3.compute-1.amazonaws.com"
-    port = "5432"
-    database = "d3iqfu9lhbdhj2"
-    user = "lqqobjhgjomqot"
-    passwd = "yyy410591"
+    host = os.environ['DATABASE_HOST']
+    port = os.environ['DATABASE_PORT']
+    database = os.environ['DATABASE']
+    user = os.environ['DATABASE_USER']
+    passwd = os.environ['DATABASE_PASSWORD']
 
     #construct connect string
     conn = psycopg2.connect(database=database,host=host,user=user,password=passwd,port=port)
@@ -231,8 +241,8 @@ if __name__ == '__main__':
     # Test Function
     # IgUrl = "https://www.instagram.com/p/BymVt2NH5OE/?igshid=7jpeb1f596h6"
     # IString = exchangeRate("JPY")
-    # IArray = getCk101Photo(getCk101Url('https://ck101.com/beauty/'))
+    IArray = getCk101Photo('https://ck101.com/thread-5017396-1-1.html')
     # IArray = getImage('https://www.mzitu.com/187752/16')
-    SData = randomIgImage()
+    # SData = randomIgImage()
 
-    print(SData)
+    print(IArray)
