@@ -58,17 +58,20 @@ def handle_message(event):
                 event.reply_token,
                 message)
     if '!妹子' in event.message.text:
-        imageUrl = ""
-        imageUrl += getCk101Photo(getCk101Url('https://ck101.com/beauty/'))
+        imageBase = getCk101Url('https://ck101.com/beauty/')
+        imageUrl = getCk101Photo(imageBase)
         print("imageUrl" + imageUrl)
         if imageUrl != "":
             message = ImageSendMessage(
                 original_content_url=imageUrl,
                 preview_image_url=imageUrl
             )
+            textMessage = TextSendMessage(text=imageBase)
+            listMessage = [message,textMessage]
+
             line_bot_api.reply_message(
                 event.reply_token,
-                message)
+                listMessage)
 
     else:
         # 返回純文字Message
