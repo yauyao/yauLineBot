@@ -76,22 +76,40 @@ def handle_message(event):
     else:
         # 返回純文字Message
         outInfo = ''
-        if '!機票' or '！機票' in event.message.text:
+        if '!機票' in event.message.text:
             outInfo += ticketInfo()
 
-        if '!日幣' or '！日幣' in event.message.text:
+        if '！機票' in event.message.text:
+            outInfo += ticketInfo()
+
+        if '!日幣' in event.message.text:
             outInfo += exchangeRate("JPY")
 
-        if '!美金' or '！美金' in event.message.text:
+        if '！日幣' in event.message.text:
+            outInfo += exchangeRate("JPY")
+
+        if '!美金' in event.message.text:
             outInfo += exchangeRate("USD")
 
-        if '!人民幣' or '！人民幣' in event.message.text:
+        if '！美金' in event.message.text:
+            outInfo += exchangeRate("USD")
+
+        if '!人民幣' in event.message.text:
             outInfo += exchangeRate("CNY")
 
-        if '!歐元' or '！歐元' in event.message.text:
+        if '！人民幣' in event.message.text:
+            outInfo += exchangeRate("CNY")
+
+        if '!歐元' in event.message.text:
             outInfo += exchangeRate("EUR")
 
-        if '!英鎊' or '！英鎊' in event.message.text:
+        if '！歐元' in event.message.text:
+            outInfo += exchangeRate("EUR")
+
+        if '!英鎊' in event.message.text:
+            outInfo += exchangeRate("GBP")
+
+        if '！英鎊' in event.message.text:
             outInfo += exchangeRate("GBP")
 
         if '!測試GO' in event.message.text:
@@ -102,13 +120,22 @@ def handle_message(event):
         # if '!妹子' in event.message.text:
         #     outInfo += getHtmlImgUrl(getSebUrl('https://www.mzitu.com/'))
 
-        if '!奶子' or '!奶子' in event.message.text:
+        if '!奶子' in event.message.text:
             outInfo += getHtmlImgUrl(getSebUrl('https://www.mzitu.com/tag/baoru/'))
 
-        if '!火龍果' or '!火龍果' in event.message.text:
+        if '！奶子' in event.message.text:
+            outInfo += getHtmlImgUrl(getSebUrl('https://www.mzitu.com/tag/baoru/'))
+
+        if '!火龍果' in event.message.text:
             outInfo += fruitPrice("812/%E7%81%AB%E9%BE%8D%E6%9E%9C-%E7%B4%85%E8%82%89(%E7%B4%85%E9%BE%8D%E6%9E%9C")
 
-        if '!芒果' or '!芒果' in event.message.text:
+        if '！火龍果' in event.message.text:
+            outInfo += fruitPrice("812/%E7%81%AB%E9%BE%8D%E6%9E%9C-%E7%B4%85%E8%82%89(%E7%B4%85%E9%BE%8D%E6%9E%9C")
+
+        if '!芒果' in event.message.text:
+            outInfo += fruitPrice("R6/芒果-金煌")
+
+        if '！芒果' in event.message.text:
             outInfo += fruitPrice("R6/芒果-金煌")
 
         print('outInfo:' + outInfo)
