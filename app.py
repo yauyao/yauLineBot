@@ -1,7 +1,7 @@
 from flask import Flask, request, abort
 import os
 from service.ChromeClawer import catchWeb
-from service.Clawer import ticketInfo,imageInfo,exchangeRate,fruitPrice,getHtmlImgUrl,getSebUrl,getCk101Url,getCk101Photo
+from service.Clawer import ticketInfo,imageInfo,exchangeRate,fruitPrice,getHtmlImgUrl,getSebUrl,getCk101Url,getCk101Photo,takeDigCurrency
 
 from linebot import (
     LineBotApi, WebhookHandler
@@ -111,6 +111,12 @@ def handle_message(event):
 
         if '！英鎊' in event.message.text:
             outInfo += exchangeRate("GBP")
+
+        if '!USDT' in event.message.text:
+            outInfo += takeDigCurrency('usdttwd')
+
+        if '！USDT' in event.message.text:
+            outInfo += takeDigCurrency('usdttwd')
 
         if '!測試GO' in event.message.text:
             result = catchWeb()

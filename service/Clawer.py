@@ -5,6 +5,7 @@ from urllib import request
 import requests
 import random
 import psycopg2
+import json
 
 def ticketInfo():
     inFo = ""
@@ -235,14 +236,25 @@ def randomIgImage():
     img_all = main_table.find_all('img')
 
 
-
+def takeDigCurrency(coin):
+    resp=""
+    url = 'https://max-api.maicoin.com/api/v2/tickers/' + coin
+    req = requests.get(url)
+    print('resp json:' + req.text)
+    output = json.loads(req.text)
+    resp += '24小時前價格：' + output['open'] + '\n'
+    resp += '24小時內最低價：' + output['low'] + '\n'
+    resp += '24小時內最高價：' + output['high'] + '\n'
+    resp += '最後交易價:' + output['last']
+    return resp
 
 if __name__ == '__main__':
     # Test Function
     # IgUrl = "https://www.instagram.com/p/BymVt2NH5OE/?igshid=7jpeb1f596h6"
     # IString = exchangeRate("JPY")
-    IArray = getCk101Photo('https://ck101.com/thread-5017396-1-1.html')
+    # IArray = getCk101Photo('https://ck101.com/thread-5017396-1-1.html')
     # IArray = getImage('https://www.mzitu.com/187752/16')
     # SData = randomIgImage()
+    IArray = takeDigCurrency('usdttwd')
 
     print(IArray)
