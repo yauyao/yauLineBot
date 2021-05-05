@@ -248,6 +248,34 @@ def takeDigCurrency(coin):
     resp += '最後交易價:' + output['last']
     return resp
 
+def takeUsdtPremium(price):
+    print("price --->" + price)
+    target = price.split("@")
+    result = ""
+    temp = ""
+
+    resp = requests.get('http://www.findrate.tw/USD/')
+    resp.encoding = "utf-8"
+    soup = BeautifulSoup(resp.text, 'html.parser')
+    first_table = soup.find('table')
+    index = 0
+    main_tr = first_table.find_all('tr')
+    for title in main_tr:
+        index = index + 1
+        if index == 3:
+            tdNum = 0
+            main_td = title.find_all("td")
+            for td in main_td:
+                tdNum = tdNum + 1
+                if tdNum == 3:
+                    temp = td.text
+    rate1 = "{:.4f}".format(float(target[1])/float(temp)*100)
+    rate2 = "{:.4f}".format(float(target[2])/float("3.67")*100)
+    result += "USDT兌NTD溢價率：" + rate1 +'% \n'
+    result += "USDT兌AED溢價率：" + rate2 + '% \n'
+    result += "USD兌NTD 1:" + temp
+    return result
+
 if __name__ == '__main__':
     # Test Function
     # IgUrl = "https://www.instagram.com/p/BymVt2NH5OE/?igshid=7jpeb1f596h6"
@@ -255,6 +283,7 @@ if __name__ == '__main__':
     # IArray = getCk101Photo('https://ck101.com/thread-5017396-1-1.html')
     # IArray = getImage('https://www.mzitu.com/187752/16')
     # SData = randomIgImage()
-    IArray = takeDigCurrency('usdttwd')
+    # IArray = takeDigCurrency('usdttwd')
+    IArray = takeUsdtPremium("!U溢價@28.34@3.74")
 
     print(IArray)

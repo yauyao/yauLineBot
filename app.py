@@ -1,6 +1,6 @@
 from flask import Flask, request, abort
 import os
-from service.Clawer import ticketInfo,imageInfo,exchangeRate,fruitPrice,getHtmlImgUrl,getSebUrl,getCk101Url,getCk101Photo,takeDigCurrency
+from service.Clawer import ticketInfo,imageInfo,exchangeRate,fruitPrice,getHtmlImgUrl,getSebUrl,getCk101Url,getCk101Photo,takeDigCurrency,takeUsdtPremium
 
 from linebot import (
     LineBotApi, WebhookHandler
@@ -137,6 +137,9 @@ def handle_message(event):
 
         if '！芒果' in event.message.text:
             outInfo += fruitPrice("R6/芒果-金煌")
+
+        if '!U溢價' in event.message.text:
+            outInfo += takeUsdtPremium(event.message.text)
 
         print('outInfo:' + outInfo)
 
