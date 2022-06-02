@@ -10,10 +10,11 @@ from bs4 import BeautifulSoup
 
 def ticketInfo():
     inFo = ""
+    print("ticketInfo start")
     resp = requests.get('https://www.ptt.cc/bbs/Japan_Travel/index.html')
     soup = BeautifulSoup(resp.text, 'html.parser')
     main_titles = soup.find_all('div', 'title')
-
+    print("main_titles -->"+main_titles)
     for title in main_titles:
         print("title -->" + title.text)
         if "資訊" in title.text:
