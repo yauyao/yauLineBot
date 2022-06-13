@@ -1,9 +1,8 @@
 import json
-import os
 import random
 from urllib import request
 
-import psycopg2
+# import psycopg2
 import requests
 from bs4 import BeautifulSoup
 
@@ -14,7 +13,7 @@ def ticketInfo():
     resp = requests.get('https://www.ptt.cc/bbs/Japan_Travel/index.html')
     soup = BeautifulSoup(resp.text, 'html.parser')
     main_titles = soup.find_all('div', 'title')
-    print("main_titles -->"+main_titles)
+    print(len(main_titles))
     for title in main_titles:
         print("title -->" + title.text)
         if "資訊" in title.text:
@@ -210,32 +209,32 @@ def getCk101Photo(url):
 
 def SqlFindDataUrl():
     # connect info
-    host = os.environ['DATABASE_HOST']
-    port = os.environ['DATABASE_PORT']
-    database = os.environ['DATABASE']
-    user = os.environ['DATABASE_USER']
-    passwd = os.environ['DATABASE_PASSWORD']
+    # host = os.environ['DATABASE_HOST']
+    # port = os.environ['DATABASE_PORT']
+    # database = os.environ['DATABASE']
+    # user = os.environ['DATABASE_USER']
+    # passwd = os.environ['DATABASE_PASSWORD']
+    #
+    # # construct connect string
+    # conn = psycopg2.connect(database=database, host=host, user=user, password=passwd, port=port)
+    # cur = conn.cursor()
+    #
+    # # 查共有幾個
+    # sql = "SELECT count(*) FROM image"
+    # cur.execute(sql)
+    # rows = cur.fetchall()
+    #
+    # # random其中一個
+    # ranId = random.randint(1, int(rows[0][0]))
+    # takeUrl = "SELECT title,url FROM image WHERE id ={0}".format(ranId)
+    # cur.execute(takeUrl)
+    # titleRow = cur.fetchall()
+    #
+    # conn.commit()  # 查询时无需，此方法提交当前事务。如果不调用这个方法，无论做了什么修改，自从上次调用#commit()是不可见的
+    # cur.close()
+    # conn.close()
 
-    # construct connect string
-    conn = psycopg2.connect(database=database, host=host, user=user, password=passwd, port=port)
-    cur = conn.cursor()
-
-    # 查共有幾個
-    sql = "SELECT count(*) FROM image"
-    cur.execute(sql)
-    rows = cur.fetchall()
-
-    # random其中一個
-    ranId = random.randint(1, int(rows[0][0]))
-    takeUrl = "SELECT title,url FROM image WHERE id ={0}".format(ranId)
-    cur.execute(takeUrl)
-    titleRow = cur.fetchall()
-
-    conn.commit()  # 查询时无需，此方法提交当前事务。如果不调用这个方法，无论做了什么修改，自从上次调用#commit()是不可见的
-    cur.close()
-    conn.close()
-
-    return titleRow[0][1]
+    return ""
 
 
 def randomIgImage():
@@ -296,6 +295,6 @@ if __name__ == '__main__':
     # IArray = getImage('https://www.mzitu.com/187752/16')
     # SData = randomIgImage()
     # IArray = takeDigCurrency('usdttwd')
-    IArray = takeUsdtPremium("!U溢價@28.34@3.74")
+    # IArray = takeUsdtPremium("!U溢價@28.34@3.74")
 
-    print(IArray)
+    print(ticketInfo())
