@@ -65,12 +65,9 @@ def handle_message(event):
                 original_content_url=imageUrl,
                 preview_image_url=imageUrl
             )
-            textMessage = TextSendMessage(text=imageBase)
-            listMessage = [message,textMessage]
-
             line_bot_api.reply_message(
                 event.reply_token,
-                listMessage)
+                message)
 
     else:
         # 返回純文字Message
