@@ -198,15 +198,18 @@ def getBeautyUrl():
     
     getOne = topic[random.randint(0, len(topic) - 1)]
 
+    print("getOne :"+getOne)
     getOneTopic = requests.get(url = getOne,cookies=cookies)
     topicSoup = BeautifulSoup(getOneTopic.text, 'html.parser')
     main_a = topicSoup.find_all("a" , href=True)
 
     for a in main_a:
-        if re.findall(r".+(?=jpg|png|jpeg)",a['href']): 
+        if re.findall(r".+(?=jpg|png|jpeg|imgur)",a['href']): 
         # find out if the url contain jpg or png or jpeg , if not return a empty list. empty list is False
             print(a['href'])
             pic.append(a['href'])
+
+    
 
     return pic[random.randint(0, len(pic) - 1)]
 
