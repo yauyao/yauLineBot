@@ -4,6 +4,7 @@ from urllib import request
 
 # import psycopg2
 import requests
+import re
 from bs4 import BeautifulSoup
 
 
@@ -182,6 +183,32 @@ def getCk101Url(url):
     print("getCk101Url back url :" + getOne)
     return getOne
 
+def getBeautyUrl():
+    print("getBeautyUrl start")
+    cookies = {"over18":"1"}
+    resp = requests.get(url = 'https://www.ptt.cc/bbs/Beauty/index.html',cookies=cookies)
+    soup = BeautifulSoup(resp.text, 'html.parser')
+    main_titles = soup.find_all('div', 'title')
+
+    topic = []
+    pic=[]
+    for title in main_titles:
+        if "正妹" in title.text:
+            topic.append("https://www.ptt.cc" + title.find("a")['href'] )
+    
+    getOne = topic[random.randint(0, len(topic) - 1)]
+
+    getOneTopic = requests.get(url = getOne,cookies=cookies)
+    topicSoup = BeautifulSoup(getOneTopic.text, 'html.parser')
+    main_a = topicSoup.find_all("a" , href=True)
+
+    for a in main_a:
+        if re.findall(r".+(?=jpg|png|jpeg)",a['href']): 
+        # find out if the url contain jpg or png or jpeg , if not return a empty list. empty list is False
+            print(a['href'])
+            pic.append(a['href'])
+
+    return pic[random.randint(0, len(pic) - 1)]
 
 def getCk101Photo(url):
     print("photo url:" + url)
@@ -295,4 +322,4 @@ if __name__ == '__main__':
     # IArray = takeDigCurrency('usdttwd')
     # IArray = takeUsdtPremium("!U溢價@28.34@3.74")
 
-    print(ticketInfo())
+    print("final:"+getBeautyUrl())
