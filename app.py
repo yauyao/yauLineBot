@@ -1,6 +1,6 @@
 from flask import Flask, request, abort
 import os
-from service.Clawer import ticketInfo,imageInfo,exchangeRate,fruitPrice,getHtmlImgUrl,getSebUrl,getCk101Url,getCk101Photo,takeDigCurrency,takeUsdtPremium
+from service.Clawer import ticketInfo,imageInfo,exchangeRate,fruitPrice,getHtmlImgUrl,getSebUrl,getBeautyUrl,takeDigCurrency,takeUsdtPremium
 
 from linebot import (
     LineBotApi, WebhookHandler
@@ -57,8 +57,8 @@ def handle_message(event):
                 event.reply_token,
                 message)
     if '!妹子' in event.message.text:
-        imageBase = getCk101Url('https://ck101.com/beauty/')
-        imageUrl = getCk101Photo(imageBase)
+        # imageBase = getCk101Url('https://ck101.com/beauty/')
+        imageUrl = getBeautyUrl()
         print('imageUrl' + imageUrl)
         if imageUrl != '':
             message = ImageSendMessage(
