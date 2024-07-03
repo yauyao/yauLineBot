@@ -186,32 +186,59 @@ def getCk101Url(url):
 def getBeautyUrl():
     print("getBeautyUrl start")
     cookies = {"over18":"1"}
-    resp = requests.get(url = 'https://www.ptt.cc/bbs/Beauty/index.html',cookies=cookies)
-    soup = BeautifulSoup(resp.text, 'html.parser')
-    main_titles = soup.find_all('div', 'title')
+    respOne = requests.get(url = 'https://www.ptt.cc/bbs/Beauty/index.html',cookies=cookies)
+    soupOne = BeautifulSoup(respOne.text, 'html.parser')
+    a_pre = soupOne.find_all('a','btn wide')
+    theMaxNumberPage = 1
+
+    for pre in a_pre:
+        if '上頁' in pre.contents[0]:
+            theMaxNumberPage = int(pre['href'].split("/")[3].replace('index','').replace('.html',''))
 
     topic = []
-    pic=[]
-    for title in main_titles:
-        if "正妹" in title.text:
-            topic.append("https://www.ptt.cc" + title.find("a")['href'] )
-    
-    getOne = topic[random.randint(0, len(topic) - 1)]
+    main_titles = soupOne.find_all('div', 'title')
+    topic = getTopicImageArray(topic,main_titles)
 
-    print("getOne :"+getOne)
-    getOneTopic = requests.get(url = getOne,cookies=cookies)
+    for index in range(3):
+        randomUrl = 'https://www.ptt.cc/bbs/Beauty/index'+str(theMaxNumberPage - random.randint(1,10))+'.html'
+        print(str(index)+","+randomUrl)
+        respOther = requests.get(url = randomUrl,cookies=cookies)
+        soupOther = BeautifulSoup(respOther.text, 'html.parser')
+        other_titles = soupOther.find_all('div', 'title')
+        topic = getTopicImageArray(topic,other_titles)
+    
+    searchMax = 0
+    pic=[]
+    while len(pic) == 0:
+        getOne = topic[random.randint(0, len(topic) - 1)]
+        print("getOne :"+getOne)
+        pic = getBeautyImageArray(getOne)
+        searchMax += 1
+        if searchMax > 10:
+            break
+
+    return pic[random.randint(0, len(pic) - 1)]
+
+def getBeautyImageArray(url):
+    pic=[]
+    cookies = {"over18":"1"}
+    getOneTopic = requests.get(url = url,cookies=cookies)
     topicSoup = BeautifulSoup(getOneTopic.text, 'html.parser')
     main_a = topicSoup.find_all("a" , href=True)
 
     for a in main_a:
-        if re.findall(r".+(?=jpg|png|jpeg|imgur)",a['href']): 
-        # find out if the url contain jpg or png or jpeg , if not return a empty list. empty list is False
-            print(a['href'])
+        if re.findall(r".+(?=jpg|png|jpeg)",a['href']): 
             pic.append(a['href'])
-
     
+    return pic
 
-    return pic[random.randint(0, len(pic) - 1)]
+def getTopicImageArray(array,main):
+    for title in main:
+        if "正妹" in title.text:
+            array.append("https://www.ptt.cc" + title.find("a")['href'] )
+
+    return array
+
 
 def getCk101Photo(url):
     print("photo url:" + url)
