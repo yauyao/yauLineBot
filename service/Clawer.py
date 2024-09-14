@@ -8,6 +8,105 @@ import re
 from bs4 import BeautifulSoup
 
 
+def mainReturnMessage(text):
+    # if 'https://www.instagram.com' in text:
+    #     # 返回含圖片Message
+    #     imageUrl = ''
+    #     imageUrl += imageInfo(text)
+
+    #     if imageUrl != '':
+    #         message = ImageSendMessage(
+    #             original_content_url=imageUrl,
+    #             preview_image_url=imageUrl
+    #         )
+    #         line_bot_api.reply_message(
+    #             event.reply_token,
+    #             message)
+    # if '!妹子' in text:
+    #     # imageBase = getCk101Url('https://ck101.com/beauty/')
+    #     imageUrl = getBeautyUrl()
+    #     print('imageUrl' + imageUrl)
+    #     if imageUrl != '':
+    #         message = ImageSendMessage(
+    #             original_content_url=imageUrl,
+    #             preview_image_url=imageUrl
+    #         )
+    #         line_bot_api.reply_message(
+    #             event.reply_token,
+    #             message)
+            
+    # 返回純文字Message
+    outInfo = ''
+    if '!機票' in text:
+        outInfo += ticketInfo()
+
+    if '！機票' in text:
+        outInfo += ticketInfo()
+
+    if '!日幣' in text:
+        outInfo += exchangeRate("JPY")
+
+    if '！日幣' in text:
+        outInfo += exchangeRate("JPY")
+
+    if '!美金' in text:
+        outInfo += exchangeRate("USD")
+
+    if '！美金' in text:
+        outInfo += exchangeRate("USD")
+
+    if '!人民幣' in text:
+        outInfo += exchangeRate("CNY")
+
+    if '！人民幣' in text:
+        outInfo += exchangeRate("CNY")
+
+    if '!歐元' in text:
+        outInfo += exchangeRate("EUR")
+
+    if '！歐元' in text:
+        outInfo += exchangeRate("EUR")
+
+    if '!英鎊' in text:
+        outInfo += exchangeRate("GBP")
+
+    if '！英鎊' in text:
+        outInfo += exchangeRate("GBP")
+
+    if '!USDT' in text:
+        outInfo += takeDigCurrency('usdttwd')
+
+    if '！USDT' in text:
+        outInfo += takeDigCurrency('usdttwd')
+
+    # if '!妹子' in text:
+    #     outInfo += getHtmlImgUrl(getSebUrl('https://www.mzitu.com/'))
+
+    if '!奶子' in text:
+        outInfo += getHtmlImgUrl(getSebUrl('https://www.mzitu.com/tag/baoru/'))
+
+    if '！奶子' in text:
+        outInfo += getHtmlImgUrl(getSebUrl('https://www.mzitu.com/tag/baoru/'))
+
+    if '!火龍果' in text:
+        outInfo += fruitPrice("812/%E7%81%AB%E9%BE%8D%E6%9E%9C-%E7%B4%85%E8%82%89(%E7%B4%85%E9%BE%8D%E6%9E%9C")
+
+    if '！火龍果' in text:
+        outInfo += fruitPrice("812/%E7%81%AB%E9%BE%8D%E6%9E%9C-%E7%B4%85%E8%82%89(%E7%B4%85%E9%BE%8D%E6%9E%9C")
+
+    if '!芒果' in text:
+        outInfo += fruitPrice("R6/芒果-金煌")
+
+    if '！芒果' in text:
+        outInfo += fruitPrice("R6/芒果-金煌")
+
+    if '!U溢價' in text:
+        outInfo += takeUsdtPremium(text)
+
+    print('outInfo:' + outInfo)
+
+    return outInfo
+
 def ticketInfo():
     inFo = ""
     print("ticketInfo start")
