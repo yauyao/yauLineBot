@@ -1,6 +1,6 @@
 from flask import Flask, request, abort
 import os
-from service.Clawer import mainReturnMessage
+from service.Clawer import returnTextMessage,getBeautyUrl
 
 from linebot.v3 import (
     WebhookHandler
@@ -13,7 +13,8 @@ from linebot.v3.messaging import (
     ApiClient,
     MessagingApi,
     ReplyMessageRequest,
-    TextMessage
+    TextMessage,
+    ImageMessage
 )
 from linebot.v3.webhooks import (
     MessageEvent,
@@ -51,22 +52,32 @@ def callback():
 def handle_message(event):
 
     print('on Call' + event.message.text)
-    outInfo = mainReturnMessage(event.message.text)
 
-    if outInfo != '':
-        with ApiClient(configuration) as api_client:
-            line_bot_api = MessagingApi(api_client)
-            line_bot_api.reply_message_with_http_info(
-                ReplyMessageRequest(
-                    reply_token=event.reply_token,
-                    messages=[TextMessage(text=event.message.text)]
+    if '!妹子' in event.message.text:
+        imageUrl = getBeautyUrl()
+        print('imageUrl' + imageUrl)
+        if imageUrl != '':
+            with ApiClient(configuration) as api_client:
+                line_bot_api = MessagingApi(api_client)
+                line_bot_api.reply_message_with_http_info(
+                    ReplyMessageRequest(
+                        reply_token=event.reply_token,
+                        messages=[ImageMessage(text=imageUrl)]
+                    )
                 )
-            )
 
-        # message = TextSendMessage(text=outInfo)
-        # line_bot_api.reply_message(
-        #     event.reply_token,
-        #     message)
+    else:
+        outInfo = returnTextMessage(event.message.text)
+
+        if outInfo != '':
+            with ApiClient(configuration) as api_client:
+                line_bot_api = MessagingApi(api_client)
+                line_bot_api.reply_message_with_http_info(
+                    ReplyMessageRequest(
+                        reply_token=event.reply_token,
+                        messages=[TextMessage(text=outInfo)]
+                    )
+                )
 
 import os
 if __name__ == "__main__":

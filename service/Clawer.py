@@ -8,33 +8,7 @@ import re
 from bs4 import BeautifulSoup
 
 
-def mainReturnMessage(text):
-    # if 'https://www.instagram.com' in text:
-    #     # 返回含圖片Message
-    #     imageUrl = ''
-    #     imageUrl += imageInfo(text)
-
-    #     if imageUrl != '':
-    #         message = ImageSendMessage(
-    #             original_content_url=imageUrl,
-    #             preview_image_url=imageUrl
-    #         )
-    #         line_bot_api.reply_message(
-    #             event.reply_token,
-    #             message)
-    # if '!妹子' in text:
-    #     # imageBase = getCk101Url('https://ck101.com/beauty/')
-    #     imageUrl = getBeautyUrl()
-    #     print('imageUrl' + imageUrl)
-    #     if imageUrl != '':
-    #         message = ImageSendMessage(
-    #             original_content_url=imageUrl,
-    #             preview_image_url=imageUrl
-    #         )
-    #         line_bot_api.reply_message(
-    #             event.reply_token,
-    #             message)
-            
+def returnTextMessage(text): 
     # 返回純文字Message
     outInfo = ''
     if '!機票' in text:
